@@ -1,0 +1,2 @@
+export const NETWORK_DATA='NETWORK_DATA'
+export const NETWORK_STATE='NETWORK_STATE'
