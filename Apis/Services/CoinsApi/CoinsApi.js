@@ -1,14 +1,15 @@
-import * as routes from "../Globals/Endpoints";
-import * as api from "../Utils/Request";
+import * as routes from "../../Globals/Endpoints";
+import * as api from "../../Utils/Request";
 
-import showNotification from "../../Components/Popup";
+import showNotification from "../../../Components/Popup";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const get50Crypto = async (body) => {
   return await api
-    .getReq(routes.getLatestTermsRoute)
+    .getReq(routes.getAllCoins)
     .then((response) => {
-      return response;
+      console.log("res 50", response.data);
+      return response.data;
     })
     .catch((err) => {
       showNotification({

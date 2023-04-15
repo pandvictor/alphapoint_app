@@ -1,5 +1,5 @@
 const api = {
-  platform: "https://localhost:3000/en",
+  platform: " https://api.coinlore.net/ ",
 };
 
 let apiBase = api.platform;

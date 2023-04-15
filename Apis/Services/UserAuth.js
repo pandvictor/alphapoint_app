@@ -7,7 +7,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // Authentation
 export const Signup = async (body) => {
   console.log(body);
-  return { status: 200, data: { ...body, status: 200 } };
+  return {
+    status: 200,
+    data: {
+      ...body,
+      status: 200,
+      accessTokenKey: "asdfasf",
+      refreshTokenKey: "1545asdf",
+      first_name: "Messi",
+    },
+  };
   /*return await api
     .PostReq(routes.userSignupRoute, body)
     .then((response) => {

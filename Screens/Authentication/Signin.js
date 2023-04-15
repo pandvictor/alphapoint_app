@@ -40,7 +40,6 @@ import validateEmail from "../../utils/verifyEmail";
 import getDeviceAttributes from "../../utils/getDeviceAttributes";
 
 export default function Signin(props) {
-  console.log("si entro signin");
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [Rememberme, setRememberme] = useState(false);
@@ -117,123 +116,123 @@ export default function Signin(props) {
           JSON.stringify("adasfsfasdrwe"),
           JSON.stringify("aesfseqgkm2pS")
         );
-        props.navigation.navigate("Home");
-        return;
-        authServices
-          .Login(body)
-          .then((resp) => {
-            setShowloder(false);
-            console.log("resp", resp);
-            try {
-              //const res = resp?.text();
-              if (res.indexOf("502 Bad Gateway") !== -1) {
-                showNotification({
-                  type: "danger",
-                  message: "Server Error",
-                  description: "Please try again later.",
-                });
-              }
-            } catch (e) {
-              console.log(e);
-            }
+        props.navigation.navigate("CryptoList");
 
-            if (!resp) {
-              showNotification({
-                type: "danger",
-                message: "Sign in",
-                description: "Invalid Credentials",
-              });
-            }
+        // authServices
+        //   .Login(body)
+        //   .then((resp) => {
+        //     setShowloder(false);
+        //     console.log("resp", resp);
+        //     try {
+        //       //const res = resp?.text();
+        //       if (res.indexOf("502 Bad Gateway") !== -1) {
+        //         showNotification({
+        //           type: "danger",
+        //           message: "Server Error",
+        //           description: "Please try again later.",
+        //         });
+        //       }
+        //     } catch (e) {
+        //       console.log(e);
+        //     }
 
-            if (resp?.message == "Network Error") {
-              showNotification({
-                type: "danger",
-                message: "Sign in",
-                description:
-                  "Network not available. Please check your internet and try again",
-              });
-            }
-            const { data } = resp;
-            if (data?.status == 401) {
-              showNotification({
-                type: "danger",
-                message: "Sign in",
-                description: "Invalid Credentials",
-              });
-            } else if (data?.status == 417) {
-              showNotification({
-                type: "danger",
-                message: "Sign in",
-                description: "Email not Confirmed",
-              });
-            } else if (data?.status == 502) {
-              showNotification({
-                type: "danger",
-                message: "Sign in",
-                description: "Invalid Credentials",
-              });
-            } else if (data?.status == constants.Fourhundred) {
-              showNotification({
-                type: "danger",
-                message: "Sign in",
-                description: data ? data?.message : "",
-              });
-            } else if (data?.status == 502) {
-              showNotification({
-                type: "danger",
-                message: "Connection",
-                description: "Can´t connect to Server",
-              });
-            } else if (resp?.status == 200) {
-              showNotification({
-                type: "success",
-                message: "Sign in",
-                description: "Sign in successfully",
-              });
-              setSession(
-                JSON.stringify(resp.data),
-                JSON.stringify(resp.data.access_token),
-                JSON.stringify(resp.data.refresh_token)
-              );
-              // console.log('Userdata', resp.data);
-              AsyncStorage.setItem("Userdata", JSON.stringify(resp.data));
+        //     if (!resp) {
+        //       showNotification({
+        //         type: "danger",
+        //         message: "Sign in",
+        //         description: "Invalid Credentials",
+        //       });
+        //     }
 
-              if (resp?.data?.idenfy_verification_status == "V") {
-                console.log(
-                  "user_first_login ------>>",
-                  typeof resp?.data?.user_first_login
-                );
-                console.log(
-                  "user_first_login ------>>",
-                  resp?.data?.user_first_login
-                );
-                if (
-                  resp?.data?.user_first_login !== null &&
-                  resp?.data?.user_first_login === false
-                ) {
-                  dispatch(setIsLoggedIn(true));
-                  getDeviceAttributes();
-                  props.navigation.navigate("Home");
-                } else {
-                  dispatch(setIsLoggedIn(true));
-                  props.navigation.navigate("Welcomescreen");
-                }
-              } else {
-                dispatch(setIsLoggedIn(true));
-                props.navigation.navigate("DFIdentityStatusScreen", {
-                  email: resp?.data?.email,
-                  firstScreen: true,
-                });
-              }
-            }
-          })
-          .catch((err) => {
-            setShowloder(false);
-            showNotification({
-              type: "danger",
-              message: err.message ? err.message : "Something wrong at Sign in",
-            });
-          });
+        //     if (resp?.message == "Network Error") {
+        //       showNotification({
+        //         type: "danger",
+        //         message: "Sign in",
+        //         description:
+        //           "Network not available. Please check your internet and try again",
+        //       });
+        //     }
+        //     const { data } = resp;
+        //     if (data?.status == 401) {
+        //       showNotification({
+        //         type: "danger",
+        //         message: "Sign in",
+        //         description: "Invalid Credentials",
+        //       });
+        //     } else if (data?.status == 417) {
+        //       showNotification({
+        //         type: "danger",
+        //         message: "Sign in",
+        //         description: "Email not Confirmed",
+        //       });
+        //     } else if (data?.status == 502) {
+        //       showNotification({
+        //         type: "danger",
+        //         message: "Sign in",
+        //         description: "Invalid Credentials",
+        //       });
+        //     } else if (data?.status == constants.Fourhundred) {
+        //       showNotification({
+        //         type: "danger",
+        //         message: "Sign in",
+        //         description: data ? data?.message : "",
+        //       });
+        //     } else if (data?.status == 502) {
+        //       showNotification({
+        //         type: "danger",
+        //         message: "Connection",
+        //         description: "Can´t connect to Server",
+        //       });
+        //     } else if (resp?.status == 200) {
+        //       showNotification({
+        //         type: "success",
+        //         message: "Sign in",
+        //         description: "Sign in successfully",
+        //       });
+        //       setSession(
+        //         JSON.stringify(resp.data),
+        //         JSON.stringify(resp.data.access_token),
+        //         JSON.stringify(resp.data.refresh_token)
+        //       );
+        //       // console.log('Userdata', resp.data);
+        //       AsyncStorage.setItem("Userdata", JSON.stringify(resp.data));
+
+        //       if (resp?.data?.idenfy_verification_status == "V") {
+        //         console.log(
+        //           "user_first_login ------>>",
+        //           typeof resp?.data?.user_first_login
+        //         );
+        //         console.log(
+        //           "user_first_login ------>>",
+        //           resp?.data?.user_first_login
+        //         );
+        //         if (
+        //           resp?.data?.user_first_login !== null &&
+        //           resp?.data?.user_first_login === false
+        //         ) {
+        //           dispatch(setIsLoggedIn(true));
+        //           getDeviceAttributes();
+        //           props.navigation.navigate("Home");
+        //         } else {
+        //           dispatch(setIsLoggedIn(true));
+        //           props.navigation.navigate("Welcomescreen");
+        //         }
+        //       } else {
+        //         dispatch(setIsLoggedIn(true));
+        //         props.navigation.navigate("DFIdentityStatusScreen", {
+        //           email: resp?.data?.email,
+        //           firstScreen: true,
+        //         });
+        //       }
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     setShowloder(false);
+        //     showNotification({
+        //       type: "danger",
+        //       message: err.message ? err.message : "Something wrong at Sign in",
+        //     });
+        //   });
       }
     }
   };

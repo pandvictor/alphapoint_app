@@ -6,7 +6,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Splashscreen from "../Screens/Authentication/Splashscreen";
 import Signin from "../Screens/Authentication/Signin";
 import Landing from "../Screens/Authentication/Landing";
-//import Home from "../Screens/Crypto/CryptoList";
+import CryptoList from "../Screens/Crypto/CryptoList";
+import Details from "../Screens/Crypto/Details";
 
 import {
   checkSession,
@@ -25,20 +26,6 @@ export default function Mainstack() {
   const is_logged_in = useSelector((state) => state.CommonState.is_logged_in);
   var userMail = "";
 
-  const linking = {
-    prefixes: ["http://localhost"],
-    config: {
-      // initialRouteName: 'Landing',
-      screens: {
-        Signin: "signin",
-      },
-    },
-    getPathFromState: (state, options) => {
-      console.log("state", state);
-      console.log("options", options);
-    },
-  };
-
   const navigationRef = useRef();
 
   const dispatch = useDispatch();
@@ -46,22 +33,22 @@ export default function Mainstack() {
   React.useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
+      console.log("checking session");
       const check_session = await checkSession();
       let is_logged_in = check_session;
-      console.log("MainStack: ", check_session);
 
       if (check_session) {
-        const userData = await AsyncStorage.getItem("Userdata");
+        const userData = await AsyncStorage.getItem("UserEmail");
         const user = JSON.parse(userData);
-        // console.log('MainStack: user', check_session, user);
-        if (user?.idenfy_verification_status === "V") {
-          setInitialRoute("Signin");
-        } else {
-          setInitialRoute("Signin");
-          userMail = userData?.email;
-        }
-        const token = await getAccessToken();
-        const exp_date = new Date(jwt(token).exp);
+        console.log("MainStack: user", check_session, user);
+        // if (user?.idenfy_verification_status === "V") {
+        //   setInitialRoute("CryptoList");
+        // } else {
+        setInitialRoute("CryptoList");
+        userMail = userData?.email;
+        // }
+        //const token = await getAccessToken();
+        const exp_date = new Date();
         const remaining_exp = (exp_date.getTime() * 1000 - Date.now()) / 1000;
 
         if (remaining_exp <= 0) {
@@ -93,7 +80,10 @@ export default function Mainstack() {
             <Stack.Screen name='Signin' component={Signin} />
           </>
         ) : (
-          <>{/*<Stack.Screen name='Home' component={Home} />*/}</>
+          <>
+            <Stack.Screen name='CryptoList' component={CryptoList} />
+            <Stack.Screen name='Details' component={Details} />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>

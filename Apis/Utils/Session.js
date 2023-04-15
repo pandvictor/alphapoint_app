@@ -1,8 +1,8 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const accessTokenKey = 'token';
-const refreshTokenKey = 'refresh';
-const userKey = 'UserEmail';
+const accessTokenKey = "token";
+const refreshTokenKey = "refresh";
+const userKey = "UserEmail";
 export const setSession = async (user, accessToken, refreshToken) => {
   await AsyncStorage.setItem(accessTokenKey, accessToken);
   await AsyncStorage.setItem(refreshTokenKey, refreshToken);

@@ -60,7 +60,7 @@ export const Images = {
   ic_checkbox21: require("../Images/ic_checkbox21.png"),
   ic_right: require("../Images/ic_right.png"),
   ic_cross: require("../Images/ic_cross.png"),
-  launch_screen: require("../Images/launch_screen.png"),
+  launch_screen: require("../Images/launch_screen2.jpeg"),
   ic_checkbox: require("../Images/ic_checkbox.png"),
   eye: require("../Images/eye.png"),
   hidden: require("../Images/hidden.png"),

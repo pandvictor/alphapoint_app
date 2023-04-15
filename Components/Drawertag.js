@@ -5,49 +5,48 @@ import {
   SafeAreaView,
   Image,
   TouchableOpacity,
-} from 'react-native';
-import React, {Component} from 'react';
+} from "react-native";
+import React, { Component } from "react";
 
-import Drawer from 'react-native-drawer';
+import Drawer from "react-native-drawer";
 
-import {appcolor, fontFamily, Images, resizeMode} from './Constant';
+import { appcolor, fontFamily, Images, resizeMode } from "./Constant";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+} from "react-native-responsive-screen";
 
-import Drawerdesign from './Drawerdesign';
+import Drawerdesign from "./Drawerdesign";
 export default class Drawertag extends Component {
-  constructor(){
+  constructor() {
     super();
-    this.state={
-      currentroute:'Home'
-    }
+    this.state = {
+      currentroute: "CryptoList",
+    };
   }
-  componentDidMount = () => { 
-   
-  };
+  componentDidMount = () => {};
   closeControlPanel = () => {
     this._drawer.close();
   };
   openControlPanel = () => {
     this._drawer.open();
   };
-  
+
   render() {
-    const{currentroute}=this.props
+    const { currentroute } = this.props;
     return (
       <Drawer
-        ref={ref => (this._drawer = ref)}
-        type="overlay"
+        ref={(ref) => (this._drawer = ref)}
+        type='overlay'
         tapToClose={true}
         openDrawerOffset={0.3} // 20% gap on the right side of drawer
         useInteractionManager={true}
         content={
           <Drawerdesign
-          currentroute={currentroute}
-          navigation={this.props.navigation}
-          closeControlPanel={this.closeControlPanel.bind(this)}/>
+            currentroute={currentroute}
+            navigation={this.props.navigation}
+            closeControlPanel={this.closeControlPanel.bind(this)}
+          />
         }>
         {this.props.children}
       </Drawer>

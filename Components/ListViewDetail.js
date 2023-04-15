@@ -6,7 +6,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import Icon from "react-native-vector-icons/EvilIcons";
-import IconFontAwesome from "react-native-vector-icons/FontAwesome";
+
 
 const ITEM_SIZE = 120 + 70;
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -23,7 +23,7 @@ const emptyListComponent = () => {
           marginTop: hp("2"),
           textAlign: "center",
         }}>
-        No Spots Founds
+        No Crypto Coins Founds
       </Text>
     </View>
   );
@@ -32,30 +32,6 @@ export default ListViewDetail = ({ data, refresh, onRefresh, navigation }) => {
   const scrollY = useRef(new Animated.Value(0)).current;
   return (
     <View style={{ flex: 1 }}>
-      {/* <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginHorizontal: wp('2'),
-              marginVertical: wp('5'),
-            }}>
-            <Text
-              style={{
-                fontSize: wp('4'),
-                fontFamily: fontFamily.verdanaRegular,
-              }}>
-              Oonee Locations  {is_logged_in}
-            </Text>
-            <Image
-              source={Images.ic_location}
-              style={{
-                height: wp('5'),
-                width: wp('5'),
-                resizeMode: resizeMode,
-                marginHorizontal: wp('2'),
-              }}
-            />
-          </View> */}
       <View style={{ flex: 1 }}>
         <Animated.FlatList
           data={data}
@@ -88,13 +64,6 @@ export default ListViewDetail = ({ data, refresh, onRefresh, navigation }) => {
               inputRange: opacityInputRange,
               outputRange: [1, 1, 1, 0],
             });
-            let coords = item?.location_point
-              ?.replace("(", " ")
-              .replace(")", " ")
-              .split("  ")[1]
-              .split(" ");
-            let lat = Number(coords[0]);
-            let long = Number(coords[1]);
 
             return (
               <AnimatedTouchable
@@ -123,9 +92,9 @@ export default ListViewDetail = ({ data, refresh, onRefresh, navigation }) => {
                 <View style={{ width: "40%" }}>
                   <Image
                     source={
-                      item.photo
+                      item?.photo
                         ? { uri: item.photo }
-                        : require("../Images/ic_img1.png")
+                        : require("../Images/crypto_symbol.png")
                     }
                     style={{
                       maxHeight: 120,
@@ -151,14 +120,7 @@ export default ListViewDetail = ({ data, refresh, onRefresh, navigation }) => {
                       borderRadius: wp("50"),
                       height: wp("3"),
                       width: wp("3"),
-                      backgroundColor:
-                        item.status == "M"
-                          ? appcolor.mentainaceDot
-                          : item.status == "A"
-                          ? appcolor.greendot
-                          : item.status == "C"
-                          ? "grey"
-                          : appcolor.offlineDot,
+                      backgroundColor: appcolor.offlineDot,
                     }}
                   />
                   <View
@@ -188,7 +150,7 @@ export default ListViewDetail = ({ data, refresh, onRefresh, navigation }) => {
                       fontSize: 14,
                       color: appcolor.darkgray,
                     }}>
-                    {item.address}
+                    {item.symbol}
                   </Text>
                   <View
                     style={{
@@ -197,7 +159,6 @@ export default ListViewDetail = ({ data, refresh, onRefresh, navigation }) => {
                       marginBottom: 5,
                       alignItems: "center",
                     }}>
-                    <Icon name='location' size={20} />
                     <Text
                       style={{
                         fontFamily: fontFamily.verdanaRegular,
@@ -205,57 +166,29 @@ export default ListViewDetail = ({ data, refresh, onRefresh, navigation }) => {
                         color: appcolor.darkgray,
                         marginLeft: 5,
                       }}>
-                      {item.distance + " Miles"}
+                      {"$" + item.price_usd}
                     </Text>
                   </View>
-                  {/* <Distancetag
-                        latitudecurrent={latitudecurrent}
-                        longitudecurrent={longitudecurrent}
-                        dlat={lat}
-                        dlang={long}
-                      /> */}
+
                   <View
                     style={{
                       flexDirection: "row",
                       marginTop: 5,
                       borderRadius: 20,
                       borderWidth: 1,
-                      borderColor:
-                        Number(item.max_parking_spots) -
-                          Number(item.used_parking_spots) ==
-                        0
-                          ? appcolor.lightgray
-                          : appcolor.greendot,
+                      borderColor: appcolor.greendot,
                       alignSelf: "flex-start",
                       paddingVertical: 5,
                       paddingHorizontal: 10,
                     }}>
-                    <IconFontAwesome
-                      name='ticket'
-                      size={20}
-                      color={
-                        Number(item.max_parking_spots) -
-                          Number(item.used_parking_spots) ==
-                        0
-                          ? appcolor.lightgray
-                          : appcolor.greendot
-                      }
-                    />
                     <Text
                       style={{
                         fontFamily: fontFamily.verdanaRegular,
                         fontSize: 14,
-                        color:
-                          Number(item.max_parking_spots) -
-                            Number(item.used_parking_spots) ==
-                          0
-                            ? appcolor.lightgray
-                            : appcolor.darkgray,
+                        color: appcolor.darkgray,
                         marginLeft: 5,
                       }}>
-                      {Number(item.max_parking_spots) -
-                        Number(item.used_parking_spots) +
-                        " Spaces"}
+                      {item.volume24 + " volume24"}
                     </Text>
                   </View>
                 </View>
