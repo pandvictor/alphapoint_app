@@ -32,8 +32,6 @@ import IconFontAwesome from "react-native-vector-icons/FontAwesome5";
 import ListViewDetail from "../../Components/ListViewDetail";
 
 export default function CryptoList(props) {
-  console.log("si entro CrytoList");
-
   const childRef = useRef();
   const lastSearch = useRef("");
   const [Showloder, setShowloder] = useState(true);
@@ -114,11 +112,9 @@ export default function CryptoList(props) {
             description: resp?.data ? resp?.data?.message : "",
           });
         } else if (resp?.data) {
-          console.log("data res", resp?.data);
-
           setRefresh(false);
           setSearchList(resp.data);
-          // setAllList(resp.data);
+
           if (resp.data.length > 0) {
             setAllList(
               lastSearch.current == ""

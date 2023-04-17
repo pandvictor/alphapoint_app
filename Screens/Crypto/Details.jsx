@@ -119,8 +119,8 @@ export default function Details(props) {
           </ScrollView>
           <View
             style={{
-              flexDirection: "row",
               width: "100%",
+              height: "100%",
               marginTop: 15,
             }}>
             <Text

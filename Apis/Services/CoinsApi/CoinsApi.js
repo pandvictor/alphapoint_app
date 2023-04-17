@@ -8,7 +8,6 @@ export const get50Crypto = async (body) => {
   return await api
     .getReq(routes.getAllCoins)
     .then((response) => {
-      console.log("res 50", response.data);
       return response.data;
     })
     .catch((err) => {
