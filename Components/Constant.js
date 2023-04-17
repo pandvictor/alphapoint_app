@@ -52,6 +52,7 @@ export const duration = {
 };
 
 export const Images = {
+  ic_crypto: require("../Images/crypto_symbol.png"),
   ic_splash: require("../Images/screenLanding.jpeg"),
   ic_hand: require("../Images/ic_hand.png"),
   ic_splash2: require("../Images/ic_splash2.png"),

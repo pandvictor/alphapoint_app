@@ -1,12 +1,11 @@
 import { View, Text, Image, Animated, TouchableOpacity } from "react-native";
 import React, { useRef } from "react";
-import { appcolor, fontFamily } from "./Constant";
+import { Images, appcolor, fontFamily } from "./Constant";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import Icon from "react-native-vector-icons/EvilIcons";
-
 
 const ITEM_SIZE = 120 + 70;
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -69,9 +68,7 @@ export default ListViewDetail = ({ data, refresh, onRefresh, navigation }) => {
               <AnimatedTouchable
                 onPress={async () =>
                   navigation.navigate("Details", {
-                    uuid: item.uuid,
-                    distance: item.distance,
-                    photo: item?.photo,
+                    ...item,
                   })
                 }
                 style={{
@@ -92,9 +89,7 @@ export default ListViewDetail = ({ data, refresh, onRefresh, navigation }) => {
                 <View style={{ width: "40%" }}>
                   <Image
                     source={
-                      item?.photo
-                        ? { uri: item.photo }
-                        : require("../Images/crypto_symbol.png")
+                      item?.photo ? { uri: item.photo } : Images.ic_crypto
                     }
                     style={{
                       maxHeight: 120,
