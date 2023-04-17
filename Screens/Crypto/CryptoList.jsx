@@ -139,18 +139,18 @@ export default function CryptoList(props) {
   };
 
   const handleSearch = (text) => {
-    // setSerachText(text);
-    // lastSearch.current = text;
-    // let data = searchList;
-    // if (data.length > 0) {
-    //   setAllList(
-    //     text == ""
-    //       ? searchList
-    //       : data.filter((item) =>
-    //           item?.name.toLowerCase().includes(text.toLowerCase())
-    //         )
-    //   );
-    // }
+    setSerachText(text);
+    lastSearch.current = text;
+    let data = searchList;
+    if (data.length > 0) {
+      setAllList(
+        text == ""
+          ? searchList
+          : data.filter((item) =>
+              item?.name.toLowerCase().includes(text.toLowerCase())
+            )
+      );
+    }
   };
 
   const _handleRefresh = async () => {
