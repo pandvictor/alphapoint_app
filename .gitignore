@@ -1,4 +1,6 @@
 node_modules
 ios/build
 ios/Pods
+*.log
 
+.expo/*.log

@@ -48,30 +48,10 @@ export default function Details(props) {
     "Sorry Door cannot be open!"
   );
 
-  const [originLocation, setOriginLocation] = useState({
-    latitude: LATITUDE,
-    longitude: LONGITUDE,
-    latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA,
-  });
-
-  const [podLocation, setPodLocation] = useState({
-    latitude: 0,
-    longitude: 0,
-  });
   const [successmodal, setsuccessmodal] = useState(false);
   const [errorModal, serErrModal] = useState(false);
 
-  const [userCurrentLocation, setUserCurrentLocation] = useState({
-    lat: "",
-    lang: "",
-  });
 
-  const [userPadLock, setUserPadLock] = useState({
-    mac_address: "",
-    spotId: "",
-    podId: 0,
-  });
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
