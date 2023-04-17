@@ -187,7 +187,7 @@ export default function CryptoList(props) {
               flex: 1,
             }}>
             <TextInput
-              placeholder='Search Location'
+              placeholder='Search Coin'
               placeholderTextColor={appcolor.darkgray}
               style={[
                 styles.textInputContainer,
