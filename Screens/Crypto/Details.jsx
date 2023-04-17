@@ -34,7 +34,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import showNotification from "../../Components/Popup";
 import { setIsLoggedIn } from "../../redux/CommonStateSlice";
 import { LineChart, Grid } from "react-native-svg-charts";
-
+import { ProgressCircle } from "react-native-svg-charts";
 const screen = Dimensions.get("window");
 
 export default function Details(props) {
@@ -45,6 +45,30 @@ export default function Details(props) {
   const [successmodal, setsuccessmodal] = useState(false);
   const [errorModal, serErrModal] = useState(false);
 
+  async function getCoinInfo(id) {
+    console.log("id", id);
+    await getCryptoInfo(id)
+      .then((resp) => {
+        setShowloder(false);
+        setRefresh(false);
+        console.log("res", resp);
+      })
+      .catch((error) => {
+        setShowloder(false);
+        setRefresh(false);
+        showNotification({
+          type: "danger",
+          message: err.message ? err.message : "Something wrong at signup",
+        });
+      });
+  }
+  useEffect(() => {
+    var intervalId = window.setInterval(function () {
+      console.log("item", item);
+      if (item?.id) getCoinInfo(item.id);
+    }, 5000);
+    return clearInterval(intervalId);
+  }, [item]);
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       checkUserSession();
@@ -123,6 +147,13 @@ export default function Details(props) {
               height: "100%",
               marginTop: 15,
             }}>
+            <LineChart
+              style={{ height: 300 }}
+              data={data}
+              svg={{ stroke: "rgb(134, 65, 244)" }}
+              contentInset={{ top: 20, bottom: 20 }}>
+              <Grid />
+            </LineChart>
             <Text
               style={{
                 fontSize: wp("4"),
@@ -130,15 +161,8 @@ export default function Details(props) {
                 flex: 1,
                 paddingHorizontal: 16,
               }}>
-              {item != null ? item.name : ""}
+              {item?.name ? item.name : ""}
             </Text>
-            <LineChart
-              style={{ height: 200 }}
-              data={data}
-              svg={{ stroke: "rgb(134, 65, 244)" }}
-              contentInset={{ top: 20, bottom: 20 }}>
-              <Grid />
-            </LineChart>
           </View>
         </View>
         <View style={{ flex: 1 }} />

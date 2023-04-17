@@ -158,7 +158,7 @@ export default function Header(props) {
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <TouchableOpacity onPress={onPress} style={{}}>
                 <Image
-                  //source={Images.ic_bell}
+                  source={Images.ic_bell}
                   style={{
                     height: wp("10"),
                     width: wp("10"),
