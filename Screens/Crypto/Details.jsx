@@ -33,15 +33,12 @@ import * as authServices from "../../Apis/Services/UserAuth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import showNotification from "../../Components/Popup";
 import { setIsLoggedIn } from "../../redux/CommonStateSlice";
+import { LineChart, Grid } from "react-native-svg-charts";
 
 const screen = Dimensions.get("window");
-const ASPECT_RATIO = screen.width / screen.height;
-const LATITUDE = 0;
-const LONGITUDE = 0;
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 export default function Details(props) {
+  const data = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80];
   const [Showloder, setShowloder] = useState(true);
   const [item, setItem] = useState(null);
 
@@ -53,6 +50,7 @@ export default function Details(props) {
       checkUserSession();
     });
     setItem(props.route.params);
+    setShowloder(false);
     return unsubscribe;
   }, [props]);
 
@@ -134,6 +132,13 @@ export default function Details(props) {
               }}>
               {item != null ? item.name : ""}
             </Text>
+            <LineChart
+              style={{ height: 200 }}
+              data={data}
+              svg={{ stroke: "rgb(134, 65, 244)" }}
+              contentInset={{ top: 20, bottom: 20 }}>
+              <Grid />
+            </LineChart>
           </View>
         </View>
         <View style={{ flex: 1 }} />
