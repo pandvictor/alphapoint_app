@@ -5,3 +5,4 @@ ios/Pods
 
 .expo/xcodebuild.log
 .expo/xcodebuild-error.log
+ios/Podfile.lock
