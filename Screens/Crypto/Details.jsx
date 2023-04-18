@@ -50,10 +50,11 @@ export default function Details(props) {
     await getCryptoInfo(id)
       .then((resp) => {
         const [info] = resp;
-        const tempData = [...data];
-        tempData.push(Number(info.price_usd));
+        let tempData = data.join(",").concat(`,${info.price_usd}`);
+
+        console.log("items", tempData, tempData.split(","));
         setPrice(Number(info.price_usd));
-        if (info.price_usd) setData(tempData);
+        if (info.price_usd) setData(tempData.split(",").map((e) => Number(e)));
         setCounter(TIME_COUNTER);
       })
       .catch((err) => {
@@ -74,7 +75,7 @@ export default function Details(props) {
     if (checkUserSession()) {
       if (item?.id) getCoinInfo(item.id);
       setShowloder(false);
-      var intervalId = window.setInterval(function () {
+      var intervalId = setInterval(function () {
         if (item?.id) getCoinInfo(item.id);
       }, 30000);
     }
@@ -123,7 +124,7 @@ export default function Details(props) {
             nestedScrollEnabled
             contentContainerStyle={{ flex: 1 }}
             contentInsetAdjustmentBehavior='automatic'>
-            <View style={{ width: "100%", height: hp("25") }}>
+            {/* <View style={{ width: "100%", height: hp("25") }}>
               <Image
                 source={
                   props.route.params.photo != null
@@ -132,7 +133,7 @@ export default function Details(props) {
                 }
                 style={{ height: "100%", width: "100%", resizeMode: "stretch" }}
               />
-            </View>
+            </View> */}
             <View style={{}}>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View
