@@ -38,39 +38,46 @@ import { ProgressCircle } from "react-native-svg-charts";
 import { getCryptoInfo } from "../../Apis/Services/CoinsApi/CoinsApi";
 const screen = Dimensions.get("window");
 
+const TIME_COUNTER = 30; // timer to do the refresh
 export default function Details(props) {
   const [data, setData] = useState([]);
   const [Showloder, setShowloder] = useState(true);
   const [item, setItem] = useState(null);
-
-  const [successmodal, setsuccessmodal] = useState(false);
-  const [errorModal, serErrModal] = useState(false);
+  const [counter, setCounter] = useState(0);
+  const [price, setPrice] = useState(0);
 
   async function getCoinInfo(id) {
     await getCryptoInfo(id)
       .then((resp) => {
-        setShowloder(false);
-
         const [info] = resp;
-        console.log("res", info);
         const tempData = [...data];
         tempData.push(Number(info.price_usd));
+        setPrice(Number(info.price_usd));
         if (info.price_usd) setData(tempData);
-        console.log(info.price_usd, data);
+        setCounter(TIME_COUNTER);
       })
       .catch((err) => {
-        setShowloder(false);
         showNotification({
           type: "danger",
-          message: err.message ? err.message : "Something wrong at signup",
+          message: err.message ? err.message : "Connection Lost!",
         });
       });
   }
+  //TIME COUNTER
   useEffect(() => {
-    if (item?.id) getCoinInfo(item.id);
-    var intervalId = window.setInterval(function () {
+    const timer =
+      counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
+    return () => clearInterval(timer);
+  }, [counter]);
+
+  useEffect(() => {
+    if (checkUserSession()) {
       if (item?.id) getCoinInfo(item.id);
-    }, 30000);
+      setShowloder(false);
+      var intervalId = window.setInterval(function () {
+        if (item?.id) getCoinInfo(item.id);
+      }, 30000);
+    }
     //return clearInterval(intervalId);
   }, [item]);
   useEffect(() => {
@@ -97,83 +104,112 @@ export default function Details(props) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <View
-        style={{ backgroundColor: appcolor.darkgray, paddingBottom: wp("7") }}>
-        <Header
-          textstyle
-          color={appcolor.white}
-          navigation={props.navigation}
-          title={item?.name ? item.name : ""}
-        />
-      </View>
-      <ScrollView
-        nestedScrollEnabled
-        contentContainerStyle={{ flex: 1 }}
-        contentInsetAdjustmentBehavior='automatic'>
-        <View style={{ width: "100%", height: hp("25") }}>
-          <Image
-            source={
-              props.route.params.photo != null
-                ? { uri: props.route.params.photo }
-                : Images.ic_crypto
-            }
-            style={{ height: "100%", width: "100%", resizeMode: "stretch" }}
-          />
-        </View>
-        <View style={{}}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginVertical: wp("3"),
-                width: "100%",
-              }}>
-              <View style={styles.scrollbutton}>
-                <Text style={styles.propertyStyle}>Cryto</Text>
-                <Text style={styles.valueStyle}>{props.route.params.name}</Text>
-              </View>
-              <View style={styles.scrollbutton}>
-                <Text style={styles.propertyStyle}>TotalCap</Text>
-                <Text style={styles.valueStyle}>0</Text>
-              </View>
-              <View style={styles.scrollbutton}>
-                <Text style={styles.propertyStyle}>Symbol</Text>
-                <Text style={styles.valueStyle}></Text>
-              </View>
-            </View>
-          </ScrollView>
+    <>
+      {item && (
+        <View style={{ flex: 1 }}>
           <View
             style={{
-              width: "100%",
-              height: "100%",
-              marginTop: 15,
+              backgroundColor: appcolor.darkgray,
+              paddingBottom: wp("7"),
             }}>
-            <LineChart
-              style={{ height: 300 }}
-              data={data}
-              svg={{ stroke: "rgb(134, 65, 244)" }}
-              contentInset={{ top: 20, bottom: 20 }}>
-              <Grid />
-            </LineChart>
-            <Text
-              style={{
-                fontSize: wp("4"),
-                fontFamily: fontFamily.verdanaRegular,
-                flex: 1,
-                paddingHorizontal: 16,
-              }}>
-              {item?.name ? item.name : ""}
-            </Text>
+            <Header
+              textstyle
+              color={appcolor.white}
+              navigation={props.navigation}
+              title={item?.name ? item.name : ""}
+            />
           </View>
-        </View>
-        <View style={{ flex: 1 }} />
-      </ScrollView>
+          <ScrollView
+            nestedScrollEnabled
+            contentContainerStyle={{ flex: 1 }}
+            contentInsetAdjustmentBehavior='automatic'>
+            <View style={{ width: "100%", height: hp("25") }}>
+              <Image
+                source={
+                  props.route.params.photo != null
+                    ? { uri: props.route.params.photo }
+                    : Images.ic_crypto
+                }
+                style={{ height: "100%", width: "100%", resizeMode: "stretch" }}
+              />
+            </View>
+            <View style={{}}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginVertical: wp("3"),
+                    width: "100%",
+                    marginBottom: "5",
+                  }}>
+                  <View style={styles.scrollbutton}>
+                    <Text style={styles.propertyStyle}>Cryto</Text>
+                    <Text style={styles.valueStyle}>{item.name}</Text>
+                  </View>
+                  <View style={styles.scrollbutton}>
+                    <Text style={styles.propertyStyle}>TotalCap</Text>
+                    <Text style={styles.valueStyle}>{item.market_cap_usd}</Text>
+                  </View>
+                  <View style={styles.scrollbutton}>
+                    <Text style={styles.propertyStyle}>Symbol</Text>
+                    <Text style={styles.valueStyle}>{item.symbol}</Text>
+                  </View>
+                </View>
+              </ScrollView>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginVertical: wp("3"),
+                  width: "100%",
+                  marginBottom: "5",
+                }}>
+                <View style={styles.scrollbutton}>
+                  <Text style={styles.propertyStyle}>Price</Text>
+                  <Text style={styles.valueStyle}>{price}</Text>
+                </View>
+                <View style={styles.scrollbutton}>
+                  <Text style={styles.propertyStyle}>Time to refresh</Text>
+                  <Text style={styles.valueStyle}>{counter}</Text>
+                </View>
+              </View>
+              {data && (
+                <View
+                  style={{
+                    width: "200",
+                    height: "200",
+                    marginTop: 15,
+                  }}>
+                  <LineChart
+                    style={{ height: 300 }}
+                    data={data}
+                    svg={{ stroke: "rgb(134, 65, 244)" }}
+                    contentInset={{ top: 20, bottom: 20 }}>
+                    <Grid />
+                  </LineChart>
+                  <Text
+                    style={{
+                      fontSize: wp("4"),
+                      fontFamily: fontFamily.verdanaRegular,
+                      flex: 1,
+                      paddingHorizontal: 16,
+                    }}>
+                    {item?.name ? item.name : ""}
+                  </Text>
+                </View>
+              )}
+            </View>
+            <View style={{ flex: 1 }} />
+          </ScrollView>
 
-      {Showloder && <Loder />}
-    </View>
+          {Showloder && <Loder />}
+        </View>
+      )}
+    </>
   );
 }
 
@@ -184,7 +220,6 @@ const styles = StyleSheet.create({
     paddingVertical: wp("1"),
     marginLeft: 16,
     minWidth: wp("25"),
-    // width: '25%',
   },
   valueStyle: {
     fontFamily: fontFamily.verdanaRegular,
