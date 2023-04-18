@@ -35,10 +35,11 @@ import showNotification from "../../Components/Popup";
 import { setIsLoggedIn } from "../../redux/CommonStateSlice";
 import { LineChart, Grid } from "react-native-svg-charts";
 import { ProgressCircle } from "react-native-svg-charts";
+import { getCryptoInfo } from "../../Apis/Services/CoinsApi/CoinsApi";
 const screen = Dimensions.get("window");
 
 export default function Details(props) {
-  const data = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80];
+  const [data, setData] = useState([]);
   const [Showloder, setShowloder] = useState(true);
   const [item, setItem] = useState(null);
 
@@ -46,16 +47,19 @@ export default function Details(props) {
   const [errorModal, serErrModal] = useState(false);
 
   async function getCoinInfo(id) {
-    console.log("id", id);
     await getCryptoInfo(id)
       .then((resp) => {
         setShowloder(false);
-        setRefresh(false);
-        console.log("res", resp);
+
+        const [info] = resp;
+        console.log("res", info);
+        const tempData = [...data];
+        tempData.push(Number(info.price_usd));
+        if (info.price_usd) setData(tempData);
+        console.log(info.price_usd, data);
       })
-      .catch((error) => {
+      .catch((err) => {
         setShowloder(false);
-        setRefresh(false);
         showNotification({
           type: "danger",
           message: err.message ? err.message : "Something wrong at signup",
@@ -63,11 +67,11 @@ export default function Details(props) {
       });
   }
   useEffect(() => {
+    if (item?.id) getCoinInfo(item.id);
     var intervalId = window.setInterval(function () {
-      console.log("item", item);
       if (item?.id) getCoinInfo(item.id);
-    }, 5000);
-    return clearInterval(intervalId);
+    }, 30000);
+    //return clearInterval(intervalId);
   }, [item]);
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
