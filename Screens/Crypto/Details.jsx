@@ -32,16 +32,18 @@ import showNotification from "../../Components/Popup";
 import { LineChart, Grid, XAxis } from "react-native-svg-charts";
 
 import { getCryptoInfo } from "../../Apis/Services/CoinsApi/CoinsApi";
+import { times } from "lodash";
 const screen = Dimensions.get("window");
 
 const TIME_COUNTER = 30; // timer to do the refresh
+const TIMES = 5; //COUNT HOW MANY TIMES IT HAVE TO DO IT
 export default function Details(props) {
   const [dataList, setDataList] = useState([]);
   const [Showloder, setShowloder] = useState(true);
   const [item, setItem] = useState(null);
   const [counter, setCounter] = useState(0);
   const [price, setPrice] = useState(0);
-
+  const [counterTime, setCounterTime] = useState(0);
   async function getCoinInfo(id) {
     await getCryptoInfo(id)
       .then((resp) => {
@@ -50,11 +52,10 @@ export default function Details(props) {
         let tempData = [...dataList];
 
         tempData.push({ price: Number(info.price_usd), date: new Date() });
-        console.log("items", tempData.length, tempData);
+        //console.log("items", tempData.length, tempData);
         setPrice(Number(info.price_usd));
         setDataList(tempData);
-
-        setCounter(TIME_COUNTER);
+        setCounter(counter + 1);
       })
       .catch((err) => {
         showNotification({
@@ -64,19 +65,21 @@ export default function Details(props) {
       });
   }
   useEffect(() => {
-    if (counter === 0 && item?.id && !Showloder) {
+    if (counterTime === 0 && item?.id && !Showloder) {
       setShowloder(true);
       getCoinInfo(item.id).finally(() => setShowloder(false));
-      setCounter(TIME_COUNTER);
+      setCounterTime(TIME_COUNTER);
     }
-  }, [counter, item?.id, Showloder]);
+  }, [counterTime, item?.id, Showloder]);
   //TIME COUNTER
   useEffect(() => {
     const timer =
-      counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
+      counterTime > 0 &&
+      counter <= TIMES &&
+      setInterval(() => setCounterTime(counterTime - 1), 1000);
 
     return () => clearInterval(timer);
-  }, [counter]);
+  }, [counterTime, counter]);
 
   useEffect(() => {
     if (checkUserSession()) {
@@ -103,7 +106,6 @@ export default function Details(props) {
         description: "Session expired please login again.",
       });
       props.navigation.navigate("Landing");
-    } else {
     }
   };
 
@@ -178,7 +180,7 @@ export default function Details(props) {
                 </View>
                 <View style={styles.scrollbutton}>
                   <Text style={styles.propertyStyle}>Time to refresh</Text>
-                  <Text style={styles.valueStyle}>{counter}</Text>
+                  <Text style={styles.valueStyle}>{counterTime}</Text>
                 </View>
               </View>
               {dataList && (
@@ -198,17 +200,16 @@ export default function Details(props) {
                     <Grid />
                   </LineChart>
                   <View style={styles.separeLine} />
-                  {/* <XAxis
+                  <XAxis
                     // style={{ height: xAxisHeight, paddingTop: 10 }}
                     data={dataList.map((e) => e.date)}
-                    formatLabel={(value, index) => dataList[index]}
+                    // formatLabel={(value, index) => dataList[index].date}
                     contentInset={{ left: 10, right: 10 }}
                     // svg={axesSvg}
-                  /> */}
+                  />
                 </View>
               )}
             </View>
-            <View style={{ flex: 1 }} />
           </ScrollView>
 
           {Showloder && <Loder />}

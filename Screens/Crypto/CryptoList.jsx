@@ -30,6 +30,7 @@ import { checkSession, clearSession } from "../../Apis/Utils/Session";
 import Icon from "react-native-vector-icons/EvilIcons";
 import IconFontAwesome from "react-native-vector-icons/FontAwesome5";
 import ListViewDetail from "../../Components/ListViewDetail";
+import { isNumber } from "lodash";
 
 export default function CryptoList(props) {
   const childRef = useRef();
@@ -141,14 +142,20 @@ export default function CryptoList(props) {
   const handleSearch = (text) => {
     setSerachText(text);
     lastSearch.current = text;
+    // if (!isNumber(text)) {
+    //   showNotification({
+    //     type: "danger",
+    //     message: "Please enter a number",
+    //   });
+    //   return null;
+    // }
+
     let data = searchList;
     if (data.length > 0) {
       setAllList(
         text == ""
           ? searchList
-          : data.filter((item) =>
-              item?.name.toLowerCase().includes(text.toLowerCase())
-            )
+          : data.filter((item) => Number(item.volume24) >= Number(text))
       );
     }
   };
@@ -187,8 +194,9 @@ export default function CryptoList(props) {
               flex: 1,
             }}>
             <TextInput
-              placeholder='Search Coin'
+              placeholder='volume24'
               placeholderTextColor={appcolor.darkgray}
+              keyboardType='numeric'
               style={[
                 styles.textInputContainer,
                 focusSearch

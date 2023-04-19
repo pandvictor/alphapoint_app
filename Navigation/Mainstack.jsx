@@ -33,7 +33,6 @@ export default function Mainstack() {
   React.useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
-      console.log("checking session");
       const check_session = await checkSession();
       let is_logged_in = check_session;
 
