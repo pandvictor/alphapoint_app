@@ -24,23 +24,19 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import CommonBtn from "../../Components/CommonBtn";
-import Successmodal from "../../Components/Successmodal";
-import Errormodal from "../../Components/Errormodal";
 
 import Loder from "../../Components/Loder";
-import * as authServices from "../../Apis/Services/UserAuth";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import showNotification from "../../Components/Popup";
-import { setIsLoggedIn } from "../../redux/CommonStateSlice";
-import { LineChart, Grid } from "react-native-svg-charts";
-import { ProgressCircle } from "react-native-svg-charts";
+import { LineChart, Grid, XAxis } from "react-native-svg-charts";
+
 import { getCryptoInfo } from "../../Apis/Services/CoinsApi/CoinsApi";
 const screen = Dimensions.get("window");
 
 const TIME_COUNTER = 30; // timer to do the refresh
 export default function Details(props) {
-  const [data, setData] = useState([]);
+  const [dataList, setDataList] = useState([]);
   const [Showloder, setShowloder] = useState(true);
   const [item, setItem] = useState(null);
   const [counter, setCounter] = useState(0);
@@ -50,11 +46,14 @@ export default function Details(props) {
     await getCryptoInfo(id)
       .then((resp) => {
         const [info] = resp;
-        let tempData = data.join(",").concat(`,${info.price_usd}`);
 
-        console.log("items", tempData, tempData.split(","));
+        let tempData = [...dataList];
+
+        tempData.push({ price: Number(info.price_usd), date: new Date() });
+        console.log("items", tempData.length, tempData);
         setPrice(Number(info.price_usd));
-        if (info.price_usd) setData(tempData.split(",").map((e) => Number(e)));
+        setDataList(tempData);
+
         setCounter(TIME_COUNTER);
       })
       .catch((err) => {
@@ -64,22 +63,26 @@ export default function Details(props) {
         });
       });
   }
+  useEffect(() => {
+    if (counter === 0 && item?.id && !Showloder) {
+      setShowloder(true);
+      getCoinInfo(item.id).finally(() => setShowloder(false));
+      setCounter(TIME_COUNTER);
+    }
+  }, [counter, item?.id, Showloder]);
   //TIME COUNTER
   useEffect(() => {
     const timer =
       counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
+
     return () => clearInterval(timer);
   }, [counter]);
 
   useEffect(() => {
     if (checkUserSession()) {
-      if (item?.id) getCoinInfo(item.id);
+      //if (item?.id) getCoinInfo(item.id);
       setShowloder(false);
-      var intervalId = setInterval(function () {
-        if (item?.id) getCoinInfo(item.id);
-      }, 30000);
     }
-    //return clearInterval(intervalId);
   }, [item]);
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -178,7 +181,7 @@ export default function Details(props) {
                   <Text style={styles.valueStyle}>{counter}</Text>
                 </View>
               </View>
-              {data && (
+              {dataList && (
                 <View
                   style={{
                     width: "200",
@@ -187,20 +190,21 @@ export default function Details(props) {
                   }}>
                   <LineChart
                     style={{ height: 300 }}
-                    data={data}
+                    data={dataList.map((e) => e.price)}
+                    animate={true}
+                    animationDuration={300}
                     svg={{ stroke: "rgb(134, 65, 244)" }}
                     contentInset={{ top: 20, bottom: 20 }}>
                     <Grid />
                   </LineChart>
-                  <Text
-                    style={{
-                      fontSize: wp("4"),
-                      fontFamily: fontFamily.verdanaRegular,
-                      flex: 1,
-                      paddingHorizontal: 16,
-                    }}>
-                    {item?.name ? item.name : ""}
-                  </Text>
+                  <View style={styles.separeLine} />
+                  {/* <XAxis
+                    // style={{ height: xAxisHeight, paddingTop: 10 }}
+                    data={dataList.map((e) => e.date)}
+                    formatLabel={(value, index) => dataList[index]}
+                    contentInset={{ left: 10, right: 10 }}
+                    // svg={axesSvg}
+                  /> */}
                 </View>
               )}
             </View>
